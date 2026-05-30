@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "ghostmode",
+	"version": "${version}",
+	"name": "GhostMode",
+	"description": "Client-side privacy mod for content creators and streamers.",
+	"authors": [
+		"lwkSlick"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/ghostmode",
+		"sources": "https://github.com/lwkslick/ghostmode"
+	},
+	"license": "MIT",
+	"icon": "assets/ghostmode/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.lwkslick.ghostmode.GhostMode"
+		],
+		"client": [
+			"com.lwkslick.ghostmode.client.GhostModeClient"
+		]
+	},
+	"mixins": [
+		"ghostmode.mixins.json",
+		{
+			"config": "ghostmode.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
