@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"com.lwkslick.ghostmode.client.GhostModeClient"
+		],
+		"modmenu": [
+			"com.lwkslick.ghostmode.client.GhostModeModMenu"
 		]
 	},
 	"mixins": [
