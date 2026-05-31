@@ -11,6 +11,8 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
+import com.lwkslick.ghostmode.client.hud.WatermarkHud;
+import com.lwkslick.ghostmode.client.network.SessionManager;
 
 public class GhostModeClient implements ClientModInitializer {
 
@@ -22,6 +24,8 @@ public class GhostModeClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		GhostModeConfig.load();
 		ChatSentinel.register();
+		WatermarkHud.register();
+		SessionManager.register();
 
 		openConfigKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.ghostmode.open_config",
