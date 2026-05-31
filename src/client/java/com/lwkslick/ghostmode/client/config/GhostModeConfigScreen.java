@@ -14,289 +14,309 @@ public class GhostModeConfigScreen {
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.literal("GhostMode"))
 
-                // ── SENTINEL ──────────────────────────────────────────────
+                // ══════════════════════════════════════════════════════════
+                // TAB 1 — STREAM MODE  (the panic tab — open this first)
+                // ══════════════════════════════════════════════════════════
                 .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Sentinel"))
-                        .tooltip(Text.literal("Sentinel automatically detects your IGN and every name on your watchlist, then hides or replaces them anywhere they appear in-game. This is your main leak prevention system."))
+                        .name(Text.literal("▶ Stream Mode"))
+                        .tooltip(Text.literal("The master switch. Turn this on before you go live. Everything else only activates when this is on."))
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Enable Sentinel"))
-                                .description(OptionDescription.of(Text.literal("Master toggle for the Sentinel name detection system. When on, your IGN and all watchlist names are automatically scanned and replaced everywhere they could appear on stream.")))
-                                .binding(true, () -> p.sentinelEnabled, v -> { p.sentinelEnabled = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Integer>createBuilder()
-                                .name(Text.literal("Fuzzy Match Sensitivity"))
-                                .description(OptionDescription.of(Text.literal("Controls how aggressively Sentinel matches your name.\n\n1 = Strict: exact matches only.\n2 = Normal: catches common variants and spacing.\n3 = Loose: catches typos, leet speak, and partial matches like 'wkslick' or 'lwk5l1ck'.\n\nRecommended: 2 for daily use, 3 if you've had leaks before.")))
-                                .binding(2, () -> p.sentinelSensitivity, v -> { p.sentinelSensitivity = v; cfg.save(); })
-                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 3).step(1))
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Cover Chat"))
-                                .description(OptionDescription.of(Text.literal("Replaces your name and watchlist names in all chat messages. Catches both your own messages and messages from other players that mention you.")))
-                                .binding(true, () -> p.sentinelChat, v -> { p.sentinelChat = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Cover Scoreboard"))
-                                .description(OptionDescription.of(Text.literal("Replaces matched names on server scoreboards. Many servers show player IGNs on the sidebar — this prevents your name from appearing there on stream.")))
-                                .binding(true, () -> p.sentinelScoreboard, v -> { p.sentinelScoreboard = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Cover Tab List"))
-                                .description(OptionDescription.of(Text.literal("Replaces matched names in the player tab list. Your own entry and any watchlist entries will show their aliases instead of real IGNs.")))
-                                .binding(true, () -> p.sentinelTabList, v -> { p.sentinelTabList = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Cover Nametags"))
-                                .description(OptionDescription.of(Text.literal("Replaces matched names on player nametags floating above heads. Useful when other players on your watchlist are nearby and visible on screen.")))
-                                .binding(true, () -> p.sentinelNametags, v -> { p.sentinelNametags = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Cover F3 Debug Screen"))
-                                .description(OptionDescription.of(Text.literal("Scrubs matched names from the F3 debug overlay. The F3 screen can expose your IGN and other sensitive info — this hides it.")))
-                                .binding(true, () -> p.sentinelF3, v -> { p.sentinelF3 = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Cover Advancements"))
-                                .description(OptionDescription.of(Text.literal("Suppresses or replaces your name in advancement popups. By default Minecraft broadcasts '[YourName] has made the advancement [X]' to all players — this catches that.")))
-                                .binding(true, () -> p.sentinelAdvancements, v -> { p.sentinelAdvancements = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Cover Death Screen"))
-                                .description(OptionDescription.of(Text.literal("Replaces your name on the death screen. The death screen displays your IGN in large text — this swaps it for your alias.")))
-                                .binding(true, () -> p.sentinelDeathScreen, v -> { p.sentinelDeathScreen = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Screenshot Guard"))
-                                .description(OptionDescription.of(Text.literal("When you take a screenshot (F2), GhostMode post-processes the image and blurs any Sentinel-matched names before saving to disk. Prevents leaks when sharing screenshots to Discord mid-stream.")))
-                                .binding(true, () -> p.screenshotGuard, v -> { p.screenshotGuard = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .build())
-
-                // ── IDENTITY ──────────────────────────────────────────────
-                .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Identity"))
-                        .tooltip(Text.literal("Control how your name and brand appear on stream. Set an alias so clips from your alt still look like yours."))
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Use Alias"))
-                                .description(OptionDescription.of(Text.literal("When enabled, your real IGN is replaced with the alias below everywhere it appears. Turn this off if you want to temporarily show your real name without disabling Sentinel.")))
-                                .binding(true, () -> p.useAlias, v -> { p.useAlias = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<String>createBuilder()
-                                .name(Text.literal("Alias Name"))
-                                .description(OptionDescription.of(Text.literal("The name that replaces your IGN everywhere on stream. Pick something neutral like 'Player' or 'AltAccount' — or anything you want viewers to see instead.")))
-                                .binding("Player", () -> p.alias, v -> { p.alias = v; cfg.save(); })
-                                .controller(StringControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Hide Own Nametag"))
-                                .description(OptionDescription.of(Text.literal("Hides your own floating nametag when in F5 third-person view. Prevents your IGN from appearing above your head in clips and stream footage.")))
-                                .binding(false, () -> p.hideOwnNametag, v -> { p.hideOwnNametag = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Show Watermark"))
-                                .description(OptionDescription.of(Text.literal("Overlays your main channel name in a corner of the screen. Even when playing on an alt, clips will show your brand. Great for when you want content attributed back to your main.")))
-                                .binding(false, () -> p.showWatermark, v -> { p.showWatermark = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<String>createBuilder()
-                                .name(Text.literal("Watermark Text"))
-                                .description(OptionDescription.of(Text.literal("The text shown in the watermark overlay. Usually your main channel name or brand handle.")))
-                                .binding("", () -> p.watermarkText, v -> { p.watermarkText = v; cfg.save(); })
-                                .controller(StringControllerBuilder::create)
-                                .build())
-
-                        .build())
-
-                // ── NETWORK ───────────────────────────────────────────────
-                .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Network"))
-                        .tooltip(Text.literal("Prevent server IPs and connection info from appearing on stream. IPs shown on screen can expose private servers and get you targeted."))
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Hide Server IP in List"))
-                                .description(OptionDescription.of(Text.literal("Replaces server IPs in the multiplayer server list with •••••••••• so they never appear on stream. The connection still works normally — only the display is masked.")))
-                                .binding(true, () -> p.hideServerIp, v -> { p.hideServerIp = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Integer>createBuilder()
-                                .name(Text.literal("IP Reveal Key"))
-                                .description(OptionDescription.of(Text.literal("The key to hold to temporarily reveal masked server IPs. Default: Left Alt.")))
-                                .binding(org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_ALT, () -> p.ipRevealKey, v -> { p.ipRevealKey = v; cfg.save(); })
-                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(256, 348).step(1))
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Hide Direct Connect History"))
-                                .description(OptionDescription.of(Text.literal("Masks the last-used address in the Direct Connect screen with ••••••••••. Prevents accidentally flashing a private server IP when opening the menu on stream.")))
-                                .binding(true, () -> p.hideDirectConnect, v -> { p.hideDirectConnect = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Hide IP in F3"))
-                                .description(OptionDescription.of(Text.literal("Removes your local IP address and network info from the F3 debug overlay. The F3 screen shows your connection details by default — this blanks those fields.")))
-                                .binding(true, () -> p.hideF3Ip, v -> { p.hideF3Ip = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Wipe Session Log on Disconnect"))
-                                .description(OptionDescription.of(Text.literal("Clears relevant entries from latest.log when you leave a server. latest.log stores your IGN, server IPs, and session info — this prevents that data from sitting on disk after a session.")))
-                                .binding(false, () -> p.wipeSessionLog, v -> { p.wipeSessionLog = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .build())
-
-                // ── COORDINATES ───────────────────────────────────────────
-                .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Coordinates"))
-                        .tooltip(Text.literal("Hide or spoof your XYZ coordinates in F3. Your real position can reveal base locations on survival servers."))
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Hide Coordinates in F3"))
-                                .description(OptionDescription.of(Text.literal("Completely removes XYZ coordinates from the F3 debug screen. Use this if you don't need fake coords, just want them gone entirely.")))
-                                .binding(false, () -> p.hideCoordinates, v -> { p.hideCoordinates = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Show Fake Coordinates"))
-                                .description(OptionDescription.of(Text.literal("Displays custom coordinates in F3 instead of your real XYZ. Your actual position is unchanged — only the display is spoofed. Set the fake values below.")))
-                                .binding(false, () -> p.fakeCoordinates, v -> { p.fakeCoordinates = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .build())
-
-                // ── TAB LIST ──────────────────────────────────────────────
-                .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Tab List"))
-                        .tooltip(Text.literal("Control what the player tab list shows. Prevent your IGN from being visible when holding Tab on stream."))
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Mask Own Entry"))
-                                .description(OptionDescription.of(Text.literal("Replaces your own entry in the tab list with your alias. Other players' names are unaffected — only yours is swapped.")))
-                                .binding(true, () -> p.maskOwnTabEntry, v -> { p.maskOwnTabEntry = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Player Count Only Mode"))
-                                .description(OptionDescription.of(Text.literal("Replaces the full tab list with just a player count, e.g. '24 players online'. No names are shown at all. Useful on large servers where the tab list is full of IGNs.")))
-                                .binding(false, () -> p.playerCountOnly, v -> { p.playerCountOnly = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Hide Tab List Entirely"))
-                                .description(OptionDescription.of(Text.literal("Completely prevents the tab list from rendering when you hold Tab. Nothing is shown at all.")))
-                                .binding(false, () -> p.hideTabList, v -> { p.hideTabList = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .build())
-
-                // ── SCOREBOARD ────────────────────────────────────────────
-                .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Scoreboard"))
-                        .tooltip(Text.literal("Control the sidebar scoreboard. Many servers use it to display player names, stats, or other info that could identify you."))
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Hide Scoreboard"))
-                                .description(OptionDescription.of(Text.literal("Completely hides the sidebar scoreboard from rendering. Nothing is shown — not names, not scores, nothing.")))
-                                .binding(false, () -> p.hideScoreboard, v -> { p.hideScoreboard = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Mask Names on Scoreboard"))
-                                .description(OptionDescription.of(Text.literal("Replaces Sentinel-matched names on the scoreboard with aliases. Scores and other info remain visible — only matched IGNs are swapped out.")))
-                                .binding(true, () -> p.maskScoreboardNames, v -> { p.maskScoreboardNames = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .build())
-
-                // ── CHAT ──────────────────────────────────────────────────
-                .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Chat"))
-                        .tooltip(Text.literal("Protect your chat from leaking your identity. Suppress DMs, remove name highlights, and stop chat from being written to disk."))
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Suppress Incoming DMs"))
-                                .description(OptionDescription.of(Text.literal("Silently drops direct messages and whispers while active. They won't appear in chat at all on stream. Note: you will miss these messages — turn off when you're not live.")))
-                                .binding(false, () -> p.suppressDMs, v -> { p.suppressDMs = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Remove Mention Highlight"))
-                                .description(OptionDescription.of(Text.literal("Stops your name from flashing, playing a sound, or highlighting when someone mentions you in chat. Prevents a visible reaction on stream that could confirm your identity.")))
-                                .binding(true, () -> p.removeMentionPing, v -> { p.removeMentionPing = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Disable Chat Log to Disk"))
-                                .description(OptionDescription.of(Text.literal("Prevents chat messages from being written to the chat log file on disk. Your IGN and server conversations won't persist in logs after the session ends.")))
-                                .binding(false, () -> p.disableChatLog, v -> { p.disableChatLog = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .build())
-
-                // ── STREAM MODE ───────────────────────────────────────────
-                .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("Stream Mode"))
-                        .tooltip(Text.literal("Stream Mode is the master privacy switch. One toggle activates everything at once. Use a safe key combo so you never accidentally turn it off mid-stream."))
-
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Stream Mode Active"))
-                                .description(OptionDescription.of(Text.literal("The master privacy toggle. When on, all active privacy features in your current profile are enforced. Turn this off only when you're not streaming or recording.")))
+                                .name(Text.literal("⚡  STREAM MODE  ⚡"))
+                                .description(OptionDescription.of(Text.literal("Master privacy switch. When OFF, GhostMode does nothing — your name and info are visible as normal. Turn this ON before streaming or recording. All the options in Protection and Identity only activate when this is on.\n\nIf you need to panic-enable mid-stream: open config (J), this tab is first, this toggle is first.")))
                                 .binding(false, () -> p.streamModeEnabled, v -> { p.streamModeEnabled = v; cfg.save(); })
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
 
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.literal("Auto-Enable on Public Servers"))
-                                .description(OptionDescription.of(Text.literal("Automatically activates Stream Mode whenever you join a public server (any non-LAN, non-localhost address). You'll never forget to turn it on before going live.")))
+                                .description(OptionDescription.of(Text.literal("Automatically turns Stream Mode on when you join any public server (not LAN/localhost). Means you never forget before going live.")))
                                 .binding(false, () -> p.autoEnablePublic, v -> { p.autoEnablePublic = v; cfg.save(); })
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
 
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.literal("Peek Mode (Hold to Reveal)"))
-                                .description(OptionDescription.of(Text.literal("Instead of a single toggle, you must hold a key combo to temporarily reveal hidden info. Everything re-hides the moment you release. Prevents accidental leaks from a misclick — recommended for live streaming.")))
+                                .description(OptionDescription.of(Text.literal("When on, you hold a key combo to temporarily see real names/coords — everything re-hides when you release. Prevents accidental reveals from a misclick. Recommended if streaming live.")))
                                 .binding(true, () -> p.peekMode, v -> { p.peekMode = v; cfg.save(); })
                                 .controller(TickBoxControllerBuilder::create)
+                                .build())
+
+                        .build())
+
+                // ══════════════════════════════════════════════════════════
+                // TAB 2 — PROTECTION  (what gets hidden)
+                // ══════════════════════════════════════════════════════════
+                .category(ConfigCategory.createBuilder()
+                        .name(Text.literal("Protection"))
+                        .tooltip(Text.literal("Everything that hides or replaces sensitive info on screen. Requires Stream Mode to be ON."))
+
+                        // ── Sentinel group ────────────────────────────────
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Sentinel — Auto Name Detection"))
+                                .description(OptionDescription.of(Text.literal("Sentinel watches for your IGN and every name on your watchlist, then hides or replaces them anywhere they appear. This is your main leak prevention.")))
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Enable Sentinel"))
+                                        .description(OptionDescription.of(Text.literal("Turns on automatic name detection and replacement. When on, your IGN and watchlist names are scanned and replaced everywhere they appear.\n\nRequires Stream Mode to be on.")))
+                                        .binding(true, () -> p.sentinelEnabled, v -> { p.sentinelEnabled = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Integer>createBuilder()
+                                        .name(Text.literal("Match Sensitivity"))
+                                        .description(OptionDescription.of(Text.literal("How aggressively Sentinel matches your name.\n\n1 = Strict: exact matches only\n2 = Normal: catches common variants (recommended)\n3 = Loose: catches typos, leet speak, partials like 'wkslick'")))
+                                        .binding(2, () -> p.sentinelSensitivity, v -> { p.sentinelSensitivity = v; cfg.save(); })
+                                        .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 3).step(1))
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Cover Chat"))
+                                        .description(OptionDescription.of(Text.literal("Replaces matched names in all chat messages — your own messages and messages from others that mention you.")))
+                                        .binding(true, () -> p.sentinelChat, v -> { p.sentinelChat = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Cover Tab List"))
+                                        .description(OptionDescription.of(Text.literal("Replaces watchlist names in the tab list. Your own entry is separately controlled by 'Mask Own Tab Entry' below.")))
+                                        .binding(true, () -> p.sentinelTabList, v -> { p.sentinelTabList = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Cover Scoreboard"))
+                                        .description(OptionDescription.of(Text.literal("Replaces matched names on the sidebar scoreboard. Many servers show player IGNs there.")))
+                                        .binding(true, () -> p.sentinelScoreboard, v -> { p.sentinelScoreboard = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Cover Nametags"))
+                                        .description(OptionDescription.of(Text.literal("Replaces matched names on player nametags above heads. Useful when watchlist players are nearby.")))
+                                        .binding(true, () -> p.sentinelNametags, v -> { p.sentinelNametags = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Cover F3 Screen"))
+                                        .description(OptionDescription.of(Text.literal("Scrubs matched names from the F3 debug overlay. F3 can expose your IGN and session data.")))
+                                        .binding(true, () -> p.sentinelF3, v -> { p.sentinelF3 = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Cover Advancements"))
+                                        .description(OptionDescription.of(Text.literal("Replaces your name in advancement popups. Minecraft broadcasts '[YourName] has made the advancement [X]' to all players — this catches that.")))
+                                        .binding(true, () -> p.sentinelAdvancements, v -> { p.sentinelAdvancements = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Cover Death Screen"))
+                                        .description(OptionDescription.of(Text.literal("Replaces your name on the death screen, where Minecraft displays your IGN in large text.")))
+                                        .binding(true, () -> p.sentinelDeathScreen, v -> { p.sentinelDeathScreen = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .build())
+
+                        // ── Tab List group ────────────────────────────────
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Tab List"))
+                                .description(OptionDescription.of(Text.literal("Controls what you see when you hold Tab. Your own entry is handled separately from other players.")))
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Mask Own Tab Entry"))
+                                        .description(OptionDescription.of(Text.literal("Replaces YOUR entry in the tab list with your alias. Other players' names are not affected by this toggle — only yours.")))
+                                        .binding(true, () -> p.maskOwnTabEntry, v -> { p.maskOwnTabEntry = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Hide Tab List Entirely"))
+                                        .description(OptionDescription.of(Text.literal("Completely prevents the tab list from rendering. Nothing shows when you hold Tab.")))
+                                        .binding(false, () -> p.hideTabList, v -> { p.hideTabList = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .build())
+
+                        // ── Scoreboard group ──────────────────────────────
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Scoreboard"))
+                                .description(OptionDescription.of(Text.literal("Controls the sidebar scoreboard.")))
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Hide Scoreboard Entirely"))
+                                        .description(OptionDescription.of(Text.literal("Completely hides the sidebar scoreboard. Nothing is shown.")))
+                                        .binding(false, () -> p.hideScoreboard, v -> { p.hideScoreboard = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Mask Names on Scoreboard"))
+                                        .description(OptionDescription.of(Text.literal("Replaces Sentinel-matched names on the scoreboard with aliases. Scores remain visible.")))
+                                        .binding(true, () -> p.maskScoreboardNames, v -> { p.maskScoreboardNames = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .build())
+
+                        // ── Chat group ────────────────────────────────────
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Chat"))
+                                .description(OptionDescription.of(Text.literal("Extra chat privacy options beyond Sentinel name coverage.")))
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Suppress Incoming DMs"))
+                                        .description(OptionDescription.of(Text.literal("Silently drops direct messages and whispers. They won't appear on stream at all. Warning: you will miss these messages — turn off when not live.")))
+                                        .binding(false, () -> p.suppressDMs, v -> { p.suppressDMs = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Remove Mention Highlight"))
+                                        .description(OptionDescription.of(Text.literal("Prevents your name flashing or pinging when someone mentions you in chat. Stops a visible reaction that could confirm your identity on stream.")))
+                                        .binding(true, () -> p.removeMentionPing, v -> { p.removeMentionPing = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Disable Chat Log to Disk"))
+                                        .description(OptionDescription.of(Text.literal("Stops chat from being written to the chat log file. Your IGN and conversations won't persist in logs after the session.")))
+                                        .binding(false, () -> p.disableChatLog, v -> { p.disableChatLog = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .build())
+
+                        // ── Screenshots group ─────────────────────────────
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Screenshots"))
+                                .description(OptionDescription.of(Text.literal("Protect screenshots taken while streaming.")))
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Screenshot Guard"))
+                                        .description(OptionDescription.of(Text.literal("When you press F2, GhostMode post-processes the screenshot and blurs Sentinel-matched names before saving to disk. Prevents leaks when sharing screenshots to Discord mid-stream.")))
+                                        .binding(true, () -> p.screenshotGuard, v -> { p.screenshotGuard = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .build())
+
+                        .build())
+
+                // ══════════════════════════════════════════════════════════
+                // TAB 3 — IDENTITY & NETWORK  (how you appear + server info)
+                // ══════════════════════════════════════════════════════════
+                .category(ConfigCategory.createBuilder()
+                        .name(Text.literal("Identity & Network"))
+                        .tooltip(Text.literal("Your alias, watermark, coordinates, and server IP masking."))
+
+                        // ── Identity group ────────────────────────────────
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Your Identity"))
+                                .description(OptionDescription.of(Text.literal("How your name appears on stream. Set your alias here.")))
+
+                                .option(Option.<String>createBuilder()
+                                        .name(Text.literal("Alias (Your Stream Name)"))
+                                        .description(OptionDescription.of(Text.literal("This replaces your real IGN everywhere when Stream Mode is on. Set it to whatever you want viewers to see — e.g. 'AltAccount', your main channel name, or just 'Player'.\n\nLeave blank to show ??? instead.")))
+                                        .binding("Player", () -> p.alias, v -> { p.alias = v.isBlank() ? "Player" : v; cfg.save(); })
+                                        .controller(StringControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Use Alias (Replace Name)"))
+                                        .description(OptionDescription.of(Text.literal("When on, your IGN is replaced with the alias above. Turn off temporarily to show your real name without disabling Stream Mode entirely.")))
+                                        .binding(true, () -> p.useAlias, v -> { p.useAlias = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Hide Own Nametag"))
+                                        .description(OptionDescription.of(Text.literal("Hides your nametag in F5 third-person view. Prevents your IGN appearing above your head in clips.")))
+                                        .binding(false, () -> p.hideOwnNametag, v -> { p.hideOwnNametag = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .build())
+
+                        // ── Watermark group ───────────────────────────────
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Watermark"))
+                                .description(OptionDescription.of(Text.literal("Show your main channel name in a corner of the screen. Even on an alt, clips will be attributed to you.")))
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Show Watermark"))
+                                        .description(OptionDescription.of(Text.literal("Overlays your channel name in a corner of the screen. Great for branding clips from an alt back to your main.")))
+                                        .binding(false, () -> p.showWatermark, v -> { p.showWatermark = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<String>createBuilder()
+                                        .name(Text.literal("Watermark Text"))
+                                        .description(OptionDescription.of(Text.literal("The text shown in the watermark. Usually your main channel name or brand handle.")))
+                                        .binding("", () -> p.watermarkText, v -> { p.watermarkText = v; cfg.save(); })
+                                        .controller(StringControllerBuilder::create)
+                                        .build())
+
+                                .build())
+
+                        // ── Coordinates group ─────────────────────────────
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Coordinates (F3)"))
+                                .description(OptionDescription.of(Text.literal("Hide or spoof your XYZ in F3. Real coords can reveal base locations on survival servers.")))
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Hide Coordinates"))
+                                        .description(OptionDescription.of(Text.literal("Completely removes XYZ from the F3 screen. Use this if you just want them gone.")))
+                                        .binding(false, () -> p.hideCoordinates, v -> { p.hideCoordinates = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Show Fake Coordinates"))
+                                        .description(OptionDescription.of(Text.literal("Shows fake XYZ values in F3 instead of your real position. Your actual movement is unaffected — only the display is spoofed.")))
+                                        .binding(false, () -> p.fakeCoordinates, v -> { p.fakeCoordinates = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .build())
+
+                        // ── Network group ─────────────────────────────────
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Network & Server IPs"))
+                                .description(OptionDescription.of(Text.literal("Mask server IPs and connection info so they can't be seen on stream.")))
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Hide Server IP in Server List"))
+                                        .description(OptionDescription.of(Text.literal("Replaces server IPs in the multiplayer list with ••••••••••. The connection works normally — only the display is masked.")))
+                                        .binding(true, () -> p.hideServerIp, v -> { p.hideServerIp = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Hide Direct Connect History"))
+                                        .description(OptionDescription.of(Text.literal("Masks the last-used address in the Direct Connect screen. Prevents accidentally flashing a private IP when opening the menu on stream.")))
+                                        .binding(true, () -> p.hideDirectConnect, v -> { p.hideDirectConnect = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Hide IP in F3"))
+                                        .description(OptionDescription.of(Text.literal("Removes your local IP and network info from the F3 debug screen.")))
+                                        .binding(true, () -> p.hideF3Ip, v -> { p.hideF3Ip = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.literal("Wipe Session Log on Disconnect"))
+                                        .description(OptionDescription.of(Text.literal("Clears your IGN, IPs, and session info from latest.log when you leave a server. Prevents that data from sitting on disk after a session.")))
+                                        .binding(false, () -> p.wipeSessionLog, v -> { p.wipeSessionLog = v; cfg.save(); })
+                                        .controller(TickBoxControllerBuilder::create)
+                                        .build())
+
                                 .build())
 
                         .build())

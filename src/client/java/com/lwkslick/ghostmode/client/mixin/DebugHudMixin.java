@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 @Mixin(PlayerPositionDebugHudEntry.class)
 public class DebugHudMixin {
 
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "render(Lnet/minecraft/client/gui/hud/debug/DebugHudLines;Lnet/minecraft/world/World;Lnet/minecraft/world/chunk/WorldChunk;Lnet/minecraft/world/chunk/WorldChunk;)V", at = @At("HEAD"), cancellable = true)
     private void ghostmode$scrubCoords(DebugHudLines lines, @Nullable World world,
                                        @Nullable WorldChunk clientChunk, @Nullable WorldChunk chunk, CallbackInfo ci) {
         GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();

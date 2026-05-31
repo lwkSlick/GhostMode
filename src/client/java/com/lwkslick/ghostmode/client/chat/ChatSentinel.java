@@ -10,70 +10,58 @@ public class ChatSentinel {
 
     public static void register() {
 
-        // ── Player chat (ALLOW_CHAT + re-inject scrubbed) ──────────────────
-        // MODIFY_CHAT does not exist in this API version.
-        // Strategy: block the original, inject scrubbed version manually.
+        // ── Sentinel scrub (player chat) ──────────────────────────────────
         ClientReceiveMessageEvents.ALLOW_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
             GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
-            if (!p.sentinelEnabled || !p.sentinelChat) return true;
+            if (!p.sentinelActive() || !p.sentinelChat) return true;
 
             String raw = message.getString();
-
-            // Suppress DMs entirely
             if (p.suppressDMs && isDM(raw)) return false;
 
-            // If name is present, block original and re-inject scrubbed
             if (SentinelManager.sentenceContainsProtected(raw)) {
                 String scrubbed = SentinelManager.scrub(raw);
                 MinecraftClient mc = MinecraftClient.getInstance();
                 if (mc.inGameHud != null) {
                     mc.inGameHud.getChatHud().addMessage(Text.literal(scrubbed));
                 }
-                return false; // block the original
+                return false;
             }
-
             return true;
         });
 
-        // ── System/game messages (ALLOW_GAME + MODIFY_GAME) ───────────────
+        // ── Sentinel scrub (system/game messages) ─────────────────────────
         ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
             GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
-            if (!p.sentinelEnabled || !p.sentinelChat) return true;
-
+            if (!p.sentinelActive() || !p.sentinelChat) return true;
             String raw = message.getString();
             if (p.suppressDMs && isDM(raw)) return false;
-
             return true;
         });
 
         ClientReceiveMessageEvents.MODIFY_GAME.register((message, overlay) -> {
             GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
-            if (!p.sentinelEnabled || !p.sentinelChat) return message;
-
+            if (!p.sentinelActive() || !p.sentinelChat) return message;
             String raw = message.getString();
             String scrubbed = SentinelManager.scrub(raw);
             if (scrubbed.equals(raw)) return message;
-
             return Text.literal(scrubbed);
         });
 
-        // ── Mention interceptor — block the chat notification/sound ───────
+        // ── Mention interceptor ───────────────────────────────────────────
         ClientReceiveMessageEvents.ALLOW_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
             GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
             if (!p.removeMentionPing) return true;
-
             MinecraftClient mc = MinecraftClient.getInstance();
             if (mc.player == null) return true;
-
             String raw = message.getString();
             String ign = mc.player.getName().getString().toLowerCase();
-
-            // If message contains our name, re-inject without triggering the ping sound/highlight
             if (raw.toLowerCase().contains(ign)) {
+                // Sentinel already re-injected a scrubbed copy — don't add another
+                if (p.sentinelActive() && p.sentinelChat) return true;
                 if (mc.inGameHud != null) {
                     mc.inGameHud.getChatHud().addMessage(message);
                 }
-                return false; // block the original which would trigger ping
+                return false;
             }
             return true;
         });
@@ -82,19 +70,16 @@ public class ChatSentinel {
         ClientReceiveMessageEvents.ALLOW_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
             GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
             if (!p.disableChatLog) return true;
-
-            // Re-inject message visually but skip the log path by blocking then re-adding
             MinecraftClient mc = MinecraftClient.getInstance();
             if (mc.inGameHud != null) {
                 mc.inGameHud.getChatHud().addMessage(message);
             }
-            return false; // block original (which would be logged), re-added above without log
+            return false;
         });
 
         ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
             GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
             if (!p.disableChatLog || overlay) return true;
-
             MinecraftClient mc = MinecraftClient.getInstance();
             if (mc.inGameHud != null) {
                 mc.inGameHud.getChatHud().addMessage(message);
@@ -103,7 +88,6 @@ public class ChatSentinel {
         });
     }
 
-    // ── DM detection ───────────────────────────────────────────────────────
     private static boolean isDM(String message) {
         if (message == null) return false;
         String lower = message.toLowerCase();

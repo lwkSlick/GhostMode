@@ -13,40 +13,47 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(PlayerListHud.class)
-public class PlayerListHudMixin {
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
-    // Hide tab list entirely
+@Mixin(PlayerListHud.class)
+public abstract class PlayerListHudMixin {
+
+    // ── Hide entire tab list ───────────────────────────────────────────────
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void onRender(DrawContext context, int scaledWindowWidth,
                           net.minecraft.scoreboard.Scoreboard scoreboard,
                           net.minecraft.scoreboard.ScoreboardObjective objective,
                           CallbackInfo ci) {
-        GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
-        if (p.hideTabList) {
-            ci.cancel();
-        }
+        if (GhostModeConfig.get().getActiveProfile().hideTabList) ci.cancel();
     }
 
-    // Mask player name in tab list
+    // ── Remove own entry from the list before anything renders ────────────
+    @Inject(method = "collectPlayerEntries", at = @At("RETURN"), cancellable = true)
+    private void filterOwnEntry(CallbackInfoReturnable<Collection<PlayerListEntry>> cir) {
+        GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (!p.maskOwnTabEntry || mc.player == null) return;
+
+        java.util.UUID myId = mc.player.getGameProfile().id();
+        List<PlayerListEntry> filtered = cir.getReturnValue().stream()
+                .map(e -> {
+                    if (e.getProfile().id().equals(myId)) {
+                        e.setDisplayName(Text.literal(p.useAlias ? p.alias : "•••••"));
+                    }
+                    return e;
+                })
+                .collect(Collectors.toList());
+        cir.setReturnValue(filtered);
+    }
+
+    // ── Sentinel — scrub watchlist names in tab list ───────────────────────
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
-    private void maskPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
+    private void scrubWatchlistNames(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
         GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
         if (!p.sentinelEnabled || !p.sentinelTabList) return;
-
         String original = cir.getReturnValue().getString();
-
-        // Mask own entry with alias
-        MinecraftClient mc = MinecraftClient.getInstance();
-        if (p.maskOwnTabEntry && mc.player != null) {
-            String ign = mc.player.getName().getString();
-            if (original.equalsIgnoreCase(ign)) {
-                cir.setReturnValue(Text.literal(p.useAlias ? p.alias : "•••••"));
-                return;
-            }
-        }
-
-        // Scrub watchlist names
         if (SentinelManager.sentenceContainsProtected(original)) {
             cir.setReturnValue(Text.literal(SentinelManager.scrub(original)));
         }

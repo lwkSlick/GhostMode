@@ -1,0 +1,44 @@
+{
+  "mappings": {
+    "com/lwkslick/ghostmode/client/mixin/AddServerScreenMixin": {
+      "init": "Lnet/minecraft/class_422;method_25426()V",
+      "render": "Lnet/minecraft/class_422;method_25394(Lnet/minecraft/class_332;IIF)V"
+    },
+    "com/lwkslick/ghostmode/client/mixin/DebugHudMixin": {
+      "render(Lnet/minecraft/client/gui/hud/debug/DebugHudLines;Lnet/minecraft/world/World;Lnet/minecraft/world/chunk/WorldChunk;Lnet/minecraft/world/chunk/WorldChunk;)V": "Lnet/minecraft/class_11621;method_72751(Lnet/minecraft/class_11630;Lnet/minecraft/class_1937;Lnet/minecraft/class_2818;Lnet/minecraft/class_2818;)V"
+    },
+    "com/lwkslick/ghostmode/client/mixin/DirectConnectScreenMixin": {
+      "init": "Lnet/minecraft/class_420;method_25426()V",
+      "render": "Lnet/minecraft/class_420;method_25394(Lnet/minecraft/class_332;IIF)V"
+    },
+    "com/lwkslick/ghostmode/client/mixin/InGameHudMixin": {
+      "renderScoreboardSidebar": "Lnet/minecraft/class_329;method_55803(Lnet/minecraft/class_332;Lnet/minecraft/class_9779;)V"
+    },
+    "com/lwkslick/ghostmode/client/mixin/PlayerListHudMixin": {
+      "getPlayerName": "Lnet/minecraft/class_355;method_1918(Lnet/minecraft/class_640;)Lnet/minecraft/class_2561;",
+      "render": "Lnet/minecraft/class_355;method_1919(Lnet/minecraft/class_332;ILnet/minecraft/class_269;Lnet/minecraft/class_266;)V"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "com/lwkslick/ghostmode/client/mixin/AddServerScreenMixin": {
+        "init": "Lnet/minecraft/class_422;method_25426()V",
+        "render": "Lnet/minecraft/class_422;method_25394(Lnet/minecraft/class_332;IIF)V"
+      },
+      "com/lwkslick/ghostmode/client/mixin/DebugHudMixin": {
+        "render(Lnet/minecraft/client/gui/hud/debug/DebugHudLines;Lnet/minecraft/world/World;Lnet/minecraft/world/chunk/WorldChunk;Lnet/minecraft/world/chunk/WorldChunk;)V": "Lnet/minecraft/class_11621;method_72751(Lnet/minecraft/class_11630;Lnet/minecraft/class_1937;Lnet/minecraft/class_2818;Lnet/minecraft/class_2818;)V"
+      },
+      "com/lwkslick/ghostmode/client/mixin/DirectConnectScreenMixin": {
+        "init": "Lnet/minecraft/class_420;method_25426()V",
+        "render": "Lnet/minecraft/class_420;method_25394(Lnet/minecraft/class_332;IIF)V"
+      },
+      "com/lwkslick/ghostmode/client/mixin/InGameHudMixin": {
+        "renderScoreboardSidebar": "Lnet/minecraft/class_329;method_55803(Lnet/minecraft/class_332;Lnet/minecraft/class_9779;)V"
+      },
+      "com/lwkslick/ghostmode/client/mixin/PlayerListHudMixin": {
+        "getPlayerName": "Lnet/minecraft/class_355;method_1918(Lnet/minecraft/class_640;)Lnet/minecraft/class_2561;",
+        "render": "Lnet/minecraft/class_355;method_1919(Lnet/minecraft/class_332;ILnet/minecraft/class_269;Lnet/minecraft/class_266;)V"
+      }
+    }
+  }
+}

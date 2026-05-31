@@ -153,6 +153,11 @@ public class GhostModeConfig {
             this.name = name;
         }
 
+        /** True when stream mode is active AND sentinel is enabled. */
+        public boolean sentinelActive() {
+            return streamModeEnabled && sentinelEnabled;
+        }
+
         public Profile copyAs(String newName) {
             Gson g = new Gson();
             Profile copy = g.fromJson(g.toJson(this), Profile.class);
