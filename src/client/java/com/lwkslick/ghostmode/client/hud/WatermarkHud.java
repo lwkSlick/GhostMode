@@ -33,6 +33,7 @@ public class WatermarkHud {
             default             -> { x = screenW - textW - margin; y = margin; } // TOP_RIGHT
         }
 
-        context.drawTextWithShadow(mc.textRenderer, text, x, y, 0xFFFFFFFF);
+        int alpha = (int)(p.watermarkOpacity * 255) << 24;
+        context.drawTextWithShadow(mc.textRenderer, text, x, y, alpha | 0x00FFFFFF);
     }
 }

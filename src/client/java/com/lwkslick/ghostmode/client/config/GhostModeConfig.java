@@ -106,6 +106,7 @@ public class GhostModeConfig {
         public boolean showWatermark       = false;
         public String  watermarkText       = "";
         public String  watermarkPosition   = "TOP_RIGHT"; // TOP_LEFT | TOP_RIGHT | BOTTOM_LEFT | BOTTOM_RIGHT
+        public float   watermarkOpacity    = 1.0f;
 
         // ── Network ───────────────────────────────────────────────────────
         public boolean hideServerIp        = true;

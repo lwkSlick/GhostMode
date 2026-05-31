@@ -240,6 +240,13 @@ public class GhostModeConfigScreen {
                                         .controller(StringControllerBuilder::create)
                                         .build())
 
+                                .option(Option.<Double>createBuilder()
+                                        .name(Text.literal("Watermark Opacity"))
+                                        .description(OptionDescription.of(Text.literal("How visible the watermark is. 1.0 = fully visible, 0.1 = almost invisible.")))
+                                        .binding(1.0, () -> (double) p.watermarkOpacity, v -> { p.watermarkOpacity = v.floatValue(); cfg.save(); })
+                                        .controller(opt -> DoubleSliderControllerBuilder.create(opt).range(0.1, 1.0).step(0.05))
+                                        .build())
+
                                 .build())
 
                         .group(OptionGroup.createBuilder()
