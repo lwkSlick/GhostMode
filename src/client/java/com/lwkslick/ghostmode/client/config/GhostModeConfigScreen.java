@@ -222,20 +222,6 @@ public class GhostModeConfigScreen {
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
 
-                        .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Fake Ping"))
-                                .description(OptionDescription.of(Text.literal("Shows a static fake ping value next to your name in the tab list instead of your real connection latency.")))
-                                .binding(false, () -> p.fakePing, v -> { p.fakePing = v; cfg.save(); })
-                                .controller(TickBoxControllerBuilder::create)
-                                .build())
-
-                        .option(Option.<Integer>createBuilder()
-                                .name(Text.literal("Fake Ping Value (ms)"))
-                                .description(OptionDescription.of(Text.literal("The ping value displayed in the tab list when Fake Ping is enabled. Default is 20ms.")))
-                                .binding(20, () -> p.fakePingValue, v -> { p.fakePingValue = v; cfg.save(); })
-                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 999).step(1))
-                                .build())
-
                         .build())
 
                 // ── SCOREBOARD ────────────────────────────────────────────

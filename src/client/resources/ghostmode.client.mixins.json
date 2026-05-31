@@ -1,11 +1,14 @@
 {
 	"required": true,
 	"package": "com.lwkslick.ghostmode.client.mixin",
+	"refmap": "ghostmode.client.refmap.json",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"AddServerScreenMixin"
+		"AddServerScreenMixin",
+		"DirectConnectScreenMixin",
+		"DebugHudMixin",
+		"PlayerListHudMixin",
+		"InGameHudMixin"
 	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+	"injectors": { "defaultRequire": 1 }
 }

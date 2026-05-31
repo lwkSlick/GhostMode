@@ -125,8 +125,6 @@ public class GhostModeConfig {
         public boolean maskOwnTabEntry     = true;
         public boolean playerCountOnly     = false;
         public boolean hideTabList         = false;
-        public boolean fakePing            = false;
-        public int     fakePingValue       = 20;
 
         // ── Scoreboard ────────────────────────────────────────────────────
         public boolean hideScoreboard      = false;

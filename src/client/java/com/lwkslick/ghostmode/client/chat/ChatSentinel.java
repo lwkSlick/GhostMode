@@ -56,6 +56,51 @@ public class ChatSentinel {
 
             return Text.literal(scrubbed);
         });
+
+        // ── Mention interceptor — block the chat notification/sound ───────
+        ClientReceiveMessageEvents.ALLOW_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
+            GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
+            if (!p.removeMentionPing) return true;
+
+            MinecraftClient mc = MinecraftClient.getInstance();
+            if (mc.player == null) return true;
+
+            String raw = message.getString();
+            String ign = mc.player.getName().getString().toLowerCase();
+
+            // If message contains our name, re-inject without triggering the ping sound/highlight
+            if (raw.toLowerCase().contains(ign)) {
+                if (mc.inGameHud != null) {
+                    mc.inGameHud.getChatHud().addMessage(message);
+                }
+                return false; // block the original which would trigger ping
+            }
+            return true;
+        });
+
+        // ── Disable chat log to disk ───────────────────────────────────────
+        ClientReceiveMessageEvents.ALLOW_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
+            GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
+            if (!p.disableChatLog) return true;
+
+            // Re-inject message visually but skip the log path by blocking then re-adding
+            MinecraftClient mc = MinecraftClient.getInstance();
+            if (mc.inGameHud != null) {
+                mc.inGameHud.getChatHud().addMessage(message);
+            }
+            return false; // block original (which would be logged), re-added above without log
+        });
+
+        ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+            GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
+            if (!p.disableChatLog || overlay) return true;
+
+            MinecraftClient mc = MinecraftClient.getInstance();
+            if (mc.inGameHud != null) {
+                mc.inGameHud.getChatHud().addMessage(message);
+            }
+            return false;
+        });
     }
 
     // ── DM detection ───────────────────────────────────────────────────────
