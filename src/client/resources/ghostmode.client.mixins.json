@@ -3,6 +3,7 @@
 	"package": "com.lwkslick.ghostmode.client.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
+		"AddServerScreenMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

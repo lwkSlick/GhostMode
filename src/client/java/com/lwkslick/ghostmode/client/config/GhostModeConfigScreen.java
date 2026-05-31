@@ -145,6 +145,13 @@ public class GhostModeConfigScreen {
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
 
+                        .option(Option.<Integer>createBuilder()
+                                .name(Text.literal("IP Reveal Key"))
+                                .description(OptionDescription.of(Text.literal("The key to hold to temporarily reveal masked server IPs. Default: Left Alt.")))
+                                .binding(org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_ALT, () -> p.ipRevealKey, v -> { p.ipRevealKey = v; cfg.save(); })
+                                .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(256, 348).step(1))
+                                .build())
+
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.literal("Hide Direct Connect History"))
                                 .description(OptionDescription.of(Text.literal("Masks the last-used address in the Direct Connect screen with ••••••••••. Prevents accidentally flashing a private server IP when opening the menu on stream.")))

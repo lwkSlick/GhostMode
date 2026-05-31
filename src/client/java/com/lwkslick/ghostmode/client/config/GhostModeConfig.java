@@ -109,6 +109,7 @@ public class GhostModeConfig {
 
         // ── Network ───────────────────────────────────────────────────────
         public boolean hideServerIp        = true;
+        public int ipRevealKey             = org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_ALT;
         public boolean hideDirectConnect   = true;
         public boolean hideF3Ip            = true;
         public boolean wipeSessionLog      = false;
