@@ -35,7 +35,7 @@ public class SentinelManager {
     public static boolean isProtected(String input) {
         if (input == null || input.isBlank()) return false;
         GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
-        if (!p.sentinelEnabled) return false;
+        if (!p.sentinelEnabled || com.lwkslick.ghostmode.client.GhostModeClient.isPeeking) return false;
         String lower = input.toLowerCase();
         for (String name : getProtectedNames()) {
             if (name == null || name.isBlank()) continue;

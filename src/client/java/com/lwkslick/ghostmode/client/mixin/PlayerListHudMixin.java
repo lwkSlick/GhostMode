@@ -26,7 +26,8 @@ public abstract class PlayerListHudMixin {
                           net.minecraft.scoreboard.Scoreboard scoreboard,
                           net.minecraft.scoreboard.ScoreboardObjective objective,
                           CallbackInfo ci) {
-        if (GhostModeConfig.get().getActiveProfile().hideTabList) ci.cancel();
+        if (!com.lwkslick.ghostmode.client.GhostModeClient.isPeeking &&
+                GhostModeConfig.get().getActiveProfile().hideTabList) ci.cancel();
     }
 
     // ── Remove own entry from the list before anything renders ────────────

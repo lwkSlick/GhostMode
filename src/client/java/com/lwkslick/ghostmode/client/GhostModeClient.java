@@ -8,6 +8,7 @@ import com.lwkslick.ghostmode.client.chat.ChatSentinel;
 import com.lwkslick.ghostmode.client.config.GhostModeConfigScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
@@ -20,6 +21,11 @@ public class GhostModeClient implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static KeyBinding openConfigKey;
 	public static KeyBinding panicKey;
+	public static KeyBinding peekKey;
+	public static KeyBinding profileCycleKey;
+
+	// Peek mode state — true while peek key is held
+	public static boolean isPeeking = false;
 
 	@Override
 	public void onInitializeClient() {
@@ -43,12 +49,30 @@ public class GhostModeClient implements ClientModInitializer {
 				ghostCategory
 		));
 
+		peekKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+				"key.ghostmode.peek",
+				InputUtil.Type.KEYSYM,
+				GLFW.GLFW_KEY_LEFT_ALT,
+				ghostCategory
+		));
+
+		profileCycleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+				"key.ghostmode.cycle_profile",
+				InputUtil.Type.KEYSYM,
+				GLFW.GLFW_KEY_UNKNOWN,
+				ghostCategory
+		));
+
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+
+			// ── Config key ────────────────────────────────────────────────
 			while (openConfigKey.wasPressed()) {
 				if (client.currentScreen == null) {
 					client.setScreen(GhostModeConfigScreen.create(null));
 				}
 			}
+
+			// ── Panic key ─────────────────────────────────────────────────
 			while (panicKey.wasPressed()) {
 				GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
 				p.streamModeEnabled = true;
@@ -63,6 +87,39 @@ public class GhostModeClient implements ClientModInitializer {
 				p.hideF3Ip = true;
 				p.useAlias = true;
 				GhostModeConfig.get().save();
+			}
+
+			// ── Peek mode — held key temporarily disables all hiding ──────
+			GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
+			if (p.peekMode && p.streamModeEnabled) {
+				boolean held = InputUtil.isKeyPressed(
+						client.getWindow(),
+						peekKey.getDefaultKey().getCode()
+				);
+				isPeeking = held;
+			} else {
+				isPeeking = false;
+			}
+
+			// ── Profile cycle key ─────────────────────────────────────────
+			while (profileCycleKey.wasPressed()) {
+				GhostModeConfig cfg = GhostModeConfig.get();
+				if (cfg.profiles.size() <= 1) return;
+				int current = 0;
+				for (int i = 0; i < cfg.profiles.size(); i++) {
+					if (cfg.profiles.get(i).name.equals(cfg.activeProfileName)) {
+						current = i;
+						break;
+					}
+				}
+				int next = (current + 1) % cfg.profiles.size();
+				cfg.setActiveProfile(cfg.profiles.get(next).name);
+				if (client.player != null) {
+					client.player.sendMessage(
+							net.minecraft.text.Text.literal("§8[GhostMode] §7Profile: §f" + cfg.activeProfileName),
+							true
+					);
+				}
 			}
 		});
 

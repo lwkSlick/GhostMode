@@ -18,6 +18,7 @@ public class DebugHudMixin {
     private void ghostmode$scrubCoords(DebugHudLines lines, @Nullable World world,
                                        @Nullable WorldChunk clientChunk, @Nullable WorldChunk chunk, CallbackInfo ci) {
         GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
+        if (com.lwkslick.ghostmode.client.GhostModeClient.isPeeking) return;
         if (!p.hideCoordinates && !p.fakeCoordinates) return;
 
         ci.cancel();

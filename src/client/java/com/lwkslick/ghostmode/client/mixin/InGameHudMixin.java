@@ -15,7 +15,8 @@ public class InGameHudMixin {
 
     @Inject(method = "renderScoreboardSidebar", at = @At("HEAD"), cancellable = true)
     private void onRenderScoreboard(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        if (GhostModeConfig.get().getActiveProfile().hideScoreboard) {
+        if (!com.lwkslick.ghostmode.client.GhostModeClient.isPeeking &&
+                GhostModeConfig.get().getActiveProfile().hideScoreboard) {
             ci.cancel();
         }
     }
