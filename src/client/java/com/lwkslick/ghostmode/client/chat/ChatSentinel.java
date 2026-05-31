@@ -51,13 +51,14 @@ public class ChatSentinel {
         ClientReceiveMessageEvents.ALLOW_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
             GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
             if (!p.removeMentionPing) return true;
+            // If sentinel is active on chat, it already scrubbed and re-injected — don't touch
+            if (p.sentinelActive() && p.sentinelChat) return true;
             MinecraftClient mc = MinecraftClient.getInstance();
             if (mc.player == null) return true;
             String raw = message.getString();
             String ign = mc.player.getName().getString().toLowerCase();
             if (raw.toLowerCase().contains(ign)) {
-                // Sentinel already re-injected a scrubbed copy — don't add another
-                if (p.sentinelActive() && p.sentinelChat) return true;
+                // Re-add silently without triggering the ping/flash, then block original
                 if (mc.inGameHud != null) {
                     mc.inGameHud.getChatHud().addMessage(message);
                 }
