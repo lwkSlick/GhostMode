@@ -346,7 +346,9 @@ public class GhostModeConfigScreen {
 
                         .group(OptionGroup.createBuilder()
                                 .name(Text.literal("Active Profile"))
-                                .description(OptionDescription.of(Text.literal("Current: " + cfg.activeProfileName + "\n\nTo switch profiles, select one below and click Apply. The config screen will reopen with that profile loaded.")))
+                                .description(OptionDescription.of(Text.literal("Current: " + cfg.activeProfileName + "\n\nAll profiles: " +
+                                        cfg.profiles.stream().map(pr -> pr.name).collect(Collectors.joining(", ")) +
+                                        "\n\nTo switch, type a name and click Apply.")))
 
                                 .option(Option.<String>createBuilder()
                                         .name(Text.literal("Switch To Profile"))
@@ -380,6 +382,27 @@ public class GhostModeConfigScreen {
                                                 v -> {
                                                     if (!v.isBlank()) {
                                                         cfg.saveCurrentAsProfile(v.trim());
+                                                        MinecraftClient mc = MinecraftClient.getInstance();
+                                                        mc.setScreen(GhostModeConfigScreen.create(null));
+                                                    }
+                                                })
+                                        .controller(StringControllerBuilder::create)
+                                        .build())
+
+                                .build())
+
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.literal("Rename Active Profile"))
+                                .description(OptionDescription.of(Text.literal("Rename the current profile. Cannot rename Default.")))
+
+                                .option(Option.<String>createBuilder()
+                                        .name(Text.literal("New Name"))
+                                        .description(OptionDescription.of(Text.literal("Type a new name for \"" + cfg.activeProfileName + "\" and click Apply.")))
+                                        .binding("",
+                                                () -> "",
+                                                v -> {
+                                                    if (!v.isBlank()) {
+                                                        cfg.renameProfile(cfg.activeProfileName, v.trim());
                                                         MinecraftClient mc = MinecraftClient.getInstance();
                                                         mc.setScreen(GhostModeConfigScreen.create(null));
                                                     }

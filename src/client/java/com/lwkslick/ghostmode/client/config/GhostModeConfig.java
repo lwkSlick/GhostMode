@@ -46,6 +46,15 @@ public class GhostModeConfig {
         save();
     }
 
+    public void renameProfile(String oldName, String newName) {
+        if (oldName.equals("Default") || newName.isBlank()) return;
+        if (profiles.stream().anyMatch(pr -> pr.name.equals(newName))) return; // name taken
+        profiles.stream().filter(pr -> pr.name.equals(oldName)).findFirst()
+                .ifPresent(pr -> pr.name = newName);
+        if (activeProfileName.equals(oldName)) activeProfileName = newName;
+        save();
+    }
+
     public void deleteProfile(String name) {
         if (name.equals("Default")) return;
         profiles.removeIf(p -> p.name.equals(name));
