@@ -240,6 +240,22 @@ public class GhostModeConfigScreen {
                                         .controller(StringControllerBuilder::create)
                                         .build())
 
+                                .option(Option.<String>createBuilder()
+                                        .name(Text.literal("Watermark Position"))
+                                        .description(OptionDescription.of(Text.literal("Where the watermark appears on screen.\nOptions: TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT")))
+                                        .binding("TOP_RIGHT", () -> p.watermarkPosition, v -> {
+                                            String upper = v.toUpperCase().trim();
+                                            if (upper.equals("TOP_LEFT") || upper.equals("TOP_RIGHT") ||
+                                                    upper.equals("BOTTOM_LEFT") || upper.equals("BOTTOM_RIGHT")) {
+                                                p.watermarkPosition = upper;
+                                                cfg.save();
+                                            }
+                                        })
+                                        .controller(opt -> CyclingListControllerBuilder.create(opt)
+                                                .values(java.util.List.of("TOP_LEFT", "TOP_RIGHT", "BOTTOM_LEFT", "BOTTOM_RIGHT"))
+                                                .valueFormatter(v -> Text.literal(v)))
+                                        .build())
+
                                 .option(Option.<Double>createBuilder()
                                         .name(Text.literal("Watermark Opacity"))
                                         .description(OptionDescription.of(Text.literal("How visible the watermark is. 1.0 = fully visible, 0.1 = almost invisible.")))
