@@ -104,7 +104,7 @@ public class GhostModeClient implements ClientModInitializer {
 			if (p.peekMode && p.streamModeEnabled) {
 				boolean held = InputUtil.isKeyPressed(
 						client.getWindow(),
-						peekKey.getDefaultKey().getCode()
+						InputUtil.fromTranslationKey(peekKey.getBoundKeyTranslationKey()).getCode()
 				);
 				isPeeking = held;
 			} else {

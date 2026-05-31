@@ -5,6 +5,7 @@ import dev.isxander.yacl3.api.controller.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import dev.isxander.yacl3.api.controller.CyclingListControllerBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,6 +59,15 @@ public class GhostModeConfigScreen {
                                 .description(OptionDescription.of(Text.literal("How dark the blur overlay is. 1.0 = fully black, 0.1 = barely visible.")))
                                 .binding(0.7, () -> (double) p.manualBlurOpacity, v -> { p.manualBlurOpacity = v.floatValue(); cfg.save(); })
                                 .controller(opt -> DoubleSliderControllerBuilder.create(opt).range(0.1, 1.0).step(0.05))
+                                .build())
+
+                        .option(Option.<String>createBuilder()
+                                .name(Text.literal("Blur Style"))
+                                .description(OptionDescription.of(Text.literal("ALIAS = solid black fill\nPIXELATE = chunky tile grid\nBLACKBAR = letterbox bars")))
+                                .binding("ALIAS", () -> p.blurStyle, v -> { p.blurStyle = v; cfg.save(); })
+                                .controller(opt -> CyclingListControllerBuilder.create(opt)
+                                        .values(java.util.List.of("ALIAS", "PIXELATE", "BLACKBAR"))
+                                        .valueFormatter(v -> Text.literal(v)))
                                 .build())
 
                         .build())
