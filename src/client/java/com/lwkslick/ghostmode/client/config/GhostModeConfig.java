@@ -140,6 +140,7 @@ public class GhostModeConfig {
         // ── Screen ────────────────────────────────────────────────────────
         public boolean screenshotGuard     = true;
         public boolean manualBlurEnabled   = true;
+        public float   manualBlurOpacity   = 0.7f;
 
         // ── Stream Mode ───────────────────────────────────────────────────
         public boolean streamModeEnabled   = false;

@@ -1,5 +1,8 @@
 {
   "key.category.ghostmode.keycategory": "GhostMode",
   "key.ghostmode.open_config": "Open Config",
-  "key.ghostmode.panic": "Panic (Enable All Protection)"
+  "key.ghostmode.panic": "Panic (Enable All Protection)",
+  "key.ghostmode.peek": "Peek (Hold to Reveal)",
+  "key.ghostmode.cycle_profile": "Cycle Profile",
+  "key.ghostmode.manual_blur": "Manual Blur (Hold)"
 }

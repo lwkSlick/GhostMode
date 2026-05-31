@@ -8,12 +8,12 @@ import com.lwkslick.ghostmode.client.chat.ChatSentinel;
 import com.lwkslick.ghostmode.client.config.GhostModeConfigScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 import com.lwkslick.ghostmode.client.hud.WatermarkHud;
 import com.lwkslick.ghostmode.client.network.SessionManager;
+import com.lwkslick.ghostmode.client.hud.BlurHud;
 
 public class GhostModeClient implements ClientModInitializer {
 
@@ -22,10 +22,12 @@ public class GhostModeClient implements ClientModInitializer {
 	public static KeyBinding openConfigKey;
 	public static KeyBinding panicKey;
 	public static KeyBinding peekKey;
+	public static KeyBinding manualBlurKey;
 	public static KeyBinding profileCycleKey;
 
 	// Peek mode state — true while peek key is held
 	public static boolean isPeeking = false;
+	public static boolean isBlurring = false;
 
 	@Override
 	public void onInitializeClient() {
@@ -33,6 +35,7 @@ public class GhostModeClient implements ClientModInitializer {
 		GhostModeConfig.load();
 		ChatSentinel.register();
 		WatermarkHud.register();
+		BlurHud.register();
 		SessionManager.register();
 
 		openConfigKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -58,6 +61,13 @@ public class GhostModeClient implements ClientModInitializer {
 
 		profileCycleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.ghostmode.cycle_profile",
+				InputUtil.Type.KEYSYM,
+				GLFW.GLFW_KEY_UNKNOWN,
+				ghostCategory
+		));
+
+		manualBlurKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+				"key.ghostmode.manual_blur",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_UNKNOWN,
 				ghostCategory
@@ -99,6 +109,16 @@ public class GhostModeClient implements ClientModInitializer {
 				isPeeking = held;
 			} else {
 				isPeeking = false;
+			}
+
+			// ── Manual blur — held key throws black overlay over screen ───
+			if (p.manualBlurEnabled) {
+				isBlurring = InputUtil.isKeyPressed(
+						client.getWindow(),
+						InputUtil.fromTranslationKey(manualBlurKey.getBoundKeyTranslationKey()).getCode()
+				);
+			} else {
+				isBlurring = false;
 			}
 
 			// ── Profile cycle key ─────────────────────────────────────────

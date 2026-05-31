@@ -46,6 +46,20 @@ public class GhostModeConfigScreen {
                                 .controller(TickBoxControllerBuilder::create)
                                 .build())
 
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.literal("Manual Blur Enabled"))
+                                .description(OptionDescription.of(Text.literal("Allows the Manual Blur hotkey to work.")))
+                                .binding(true, () -> p.manualBlurEnabled, v -> { p.manualBlurEnabled = v; cfg.save(); })
+                                .controller(TickBoxControllerBuilder::create)
+                                .build())
+
+                        .option(Option.<Double>createBuilder()
+                                .name(Text.literal("Manual Blur Opacity"))
+                                .description(OptionDescription.of(Text.literal("How dark the blur overlay is. 1.0 = fully black, 0.1 = barely visible.")))
+                                .binding(0.7, () -> (double) p.manualBlurOpacity, v -> { p.manualBlurOpacity = v.floatValue(); cfg.save(); })
+                                .controller(opt -> DoubleSliderControllerBuilder.create(opt).range(0.1, 1.0).step(0.05))
+                                .build())
+
                         .build())
 
                 // ══════════════════════════════════════════════════════════
