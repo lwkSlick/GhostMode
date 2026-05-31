@@ -48,10 +48,21 @@ public abstract class PlayerListHudMixin {
         cir.setReturnValue(filtered);
     }
 
-    // ── Sentinel — scrub watchlist names in tab list ───────────────────────
+    // ── Sentinel + own entry — intercept name at render time ──────────────
     @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
     private void scrubWatchlistNames(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
         GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
+        MinecraftClient mc = MinecraftClient.getInstance();
+
+        // Own entry — force alias here too, in case setDisplayName was ignored
+        if (p.maskOwnTabEntry && mc.player != null) {
+            if (entry.getProfile().id().equals(mc.player.getGameProfile().id())) {
+                cir.setReturnValue(Text.literal(p.useAlias ? p.alias : "•••••"));
+                return;
+            }
+        }
+
+        // Sentinel — scrub watchlist names
         if (!p.sentinelEnabled || !p.sentinelTabList) return;
         String original = cir.getReturnValue().getString();
         if (SentinelManager.sentenceContainsProtected(original)) {
