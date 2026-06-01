@@ -8,7 +8,9 @@
 		"DirectConnectScreenMixin",
 		"PlayerListHudMixin",
 		"InGameHudMixin",
-		"DebugHudMixin"
+		"DebugHudMixin",
+		"AdvancementWidgetMixin",
+		"DeathScreenMixin"
 	],
 	"injectors": { "defaultRequire": 1 }
 }
