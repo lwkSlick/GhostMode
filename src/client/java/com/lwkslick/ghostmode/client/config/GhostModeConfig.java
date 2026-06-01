@@ -103,7 +103,6 @@ public class GhostModeConfig {
         public boolean sentinelF3          = true;
         public boolean sentinelAdvancements= true;
         public boolean sentinelDeathScreen = true;
-        public boolean sentinelScreenshots = true;
 
         // ── Watchlist (extra names to protect) ───────────────────────────
         public List<WatchlistEntry> watchlist = new ArrayList<>();
@@ -111,7 +110,6 @@ public class GhostModeConfig {
         // ── Identity ──────────────────────────────────────────────────────
         public boolean useAlias            = true;
         public String  alias               = "Player";
-        public boolean hideOwnNametag      = false;
         public boolean showWatermark       = false;
         public String  watermarkText       = "";
         public String  watermarkPosition   = "TOP_RIGHT"; // TOP_LEFT | TOP_RIGHT | BOTTOM_LEFT | BOTTOM_RIGHT
@@ -119,7 +117,6 @@ public class GhostModeConfig {
 
         // ── Network ───────────────────────────────────────────────────────
         public boolean hideServerIp        = true;
-        public int ipRevealKey             = org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_ALT;
         public boolean hideDirectConnect   = true;
         public boolean hideF3Ip            = true;
         public boolean wipeSessionLog      = false;
@@ -133,12 +130,10 @@ public class GhostModeConfig {
 
         // ── Tab List ──────────────────────────────────────────────────────
         public boolean maskOwnTabEntry     = true;
-        public boolean playerCountOnly     = false;
         public boolean hideTabList         = false;
 
         // ── Scoreboard ────────────────────────────────────────────────────
         public boolean hideScoreboard      = false;
-        public boolean blurScoreboard      = false;
         public boolean maskScoreboardNames = true;
 
         // ── Chat ──────────────────────────────────────────────────────────
@@ -147,7 +142,6 @@ public class GhostModeConfig {
         public boolean disableChatLog      = false;
 
         // ── Screen ────────────────────────────────────────────────────────
-        public boolean screenshotGuard     = true;
         public boolean manualBlurEnabled   = true;
         public float   manualBlurOpacity   = 0.7f;
 
@@ -156,7 +150,6 @@ public class GhostModeConfig {
         public boolean autoEnablePublic    = false;
 
         // ── Hotkeys ───────────────────────────────────────────────────────
-        public String  hotkeyMode          = "COMBO"; // SINGLE | COMBO
         public boolean peekMode            = true;
 
         // ── Constructor ───────────────────────────────────────────────────

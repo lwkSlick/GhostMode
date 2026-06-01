@@ -9,6 +9,7 @@
 		"PlayerListHudMixin",
 		"InGameHudMixin",
 		"DebugHudMixin",
+		"EntityRendererMixin",
 		"AdvancementWidgetMixin",
 		"DeathScreenMixin"
 	],

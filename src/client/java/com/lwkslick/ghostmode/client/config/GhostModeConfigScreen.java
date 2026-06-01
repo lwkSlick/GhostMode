@@ -202,18 +202,6 @@ public class GhostModeConfigScreen {
 
                                 .build())
 
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Screenshots"))
-
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Screenshot Guard"))
-                                        .description(OptionDescription.of(Text.literal("Post-processes F2 screenshots to blur Sentinel-matched names before saving.")))
-                                        .binding(true, () -> p.screenshotGuard, v -> { p.screenshotGuard = v; cfg.save(); })
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-
-                                .build())
-
                         .build())
 
                 // ══════════════════════════════════════════════════════════
@@ -236,13 +224,6 @@ public class GhostModeConfigScreen {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.literal("Use Alias (Replace Name)"))
                                         .binding(true, () -> p.useAlias, v -> { p.useAlias = v; cfg.save(); })
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Hide Own Nametag"))
-                                        .description(OptionDescription.of(Text.literal("Hides your nametag in F5 third-person view.")))
-                                        .binding(false, () -> p.hideOwnNametag, v -> { p.hideOwnNametag = v; cfg.save(); })
                                         .controller(TickBoxControllerBuilder::create)
                                         .build())
 
