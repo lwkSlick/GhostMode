@@ -19,6 +19,8 @@ public class GhostModeConfig {
     public boolean enabled            = true;
     public boolean hideServerIp       = true;
     public boolean hideDirectConnect  = true;
+    public boolean hideUsername       = true;
+    public String  usernameAlias      = "Streamer";
 
     public static void load() {
         if (Files.exists(CONFIG_PATH)) {
