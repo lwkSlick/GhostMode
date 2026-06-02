@@ -16,6 +16,10 @@ public class GhostModeConfig {
     private static final Path CONFIG_PATH =
             FabricLoader.getInstance().getConfigDir().resolve("ghostmode.json");
 
+    public boolean enabled            = true;
+    public boolean hideServerIp       = true;
+    public boolean hideDirectConnect  = true;
+
     public static void load() {
         if (Files.exists(CONFIG_PATH)) {
             try (Reader r = Files.newBufferedReader(CONFIG_PATH)) {

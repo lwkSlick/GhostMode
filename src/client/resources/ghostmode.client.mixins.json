@@ -4,6 +4,8 @@
 	"refmap": "client-ghostmode.client.refmap.json",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
+		"AddServerScreenMixin",
+		"DirectConnectScreenMixin"
 	],
 	"injectors": { "defaultRequire": 1 }
 }
