@@ -6,7 +6,8 @@
 	"client": [
 		"AddServerScreenMixin",
 		"DirectConnectScreenMixin",
-		"DrawContextMixin"
+		"DrawContextMixin",
+		"ChatHudMixin"
 	],
 	"injectors": { "defaultRequire": 1 }
 }

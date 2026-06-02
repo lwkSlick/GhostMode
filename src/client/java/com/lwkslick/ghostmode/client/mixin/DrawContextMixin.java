@@ -43,10 +43,16 @@ public class DrawContextMixin {
         if (mc.player == null) return t;
         String name = mc.player.getName().getString();
         String alias = (cfg.usernameAlias == null || cfg.usernameAlias.isBlank()) ? "Streamer" : cfg.usernameAlias;
+        // Collect the full string including styled segments
         StringBuilder sb = new StringBuilder();
-        t.accept((index, style, codePoint) -> { sb.appendCodePoint(codePoint); return true; });
+        t.accept((index, style, codePoint) -> {
+            sb.appendCodePoint(codePoint);
+            return true;
+        });
         String raw = sb.toString();
-        if (!raw.contains(name)) return t;
-        return net.minecraft.text.Text.literal(raw.replace(name, alias)).asOrderedText();
+        net.minecraft.client.MinecraftClient.getInstance().player.sendMessage(net.minecraft.text.Text.literal("[DEBUG] " + raw), true);
+        // Rebuild preserving style per character, swapping name chars with alias
+        String replaced = raw.replace(name, alias);
+        return net.minecraft.text.Text.literal(replaced).asOrderedText();
     }
 }

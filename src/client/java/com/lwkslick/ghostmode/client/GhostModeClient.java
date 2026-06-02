@@ -10,6 +10,9 @@ import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.text.Text;
+import net.minecraft.client.MinecraftClient;
 
 public class GhostModeClient implements ClientModInitializer {
 
@@ -39,6 +42,18 @@ public class GhostModeClient implements ClientModInitializer {
                     client.setScreen(GhostModeConfigScreen.create(null));
                 }
             }
+        });
+
+        ClientReceiveMessageEvents.MODIFY_GAME.register((message, overlay) -> {
+            GhostModeConfig cfg = GhostModeConfig.get();
+            if (!cfg.enabled || !cfg.hideUsername) return message;
+            MinecraftClient mc = MinecraftClient.getInstance();
+            if (mc.player == null) return message;
+            String name = mc.player.getName().getString();
+            String alias = (cfg.usernameAlias == null || cfg.usernameAlias.isBlank()) ? "Streamer" : cfg.usernameAlias;
+            String raw = message.getString();
+            if (!raw.contains(name)) return message;
+            return Text.literal(raw.replace(name, alias));
         });
 
         LOGGER.info("GhostMode client initialized.");
