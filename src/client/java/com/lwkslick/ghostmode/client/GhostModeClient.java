@@ -14,6 +14,7 @@ import org.lwjgl.glfw.GLFW;
 import com.lwkslick.ghostmode.client.hud.WatermarkHud;
 import com.lwkslick.ghostmode.client.network.SessionManager;
 import com.lwkslick.ghostmode.client.hud.BlurHud;
+import com.lwkslick.ghostmode.client.hud.StreamHud;
 
 public class GhostModeClient implements ClientModInitializer {
 
@@ -29,14 +30,20 @@ public class GhostModeClient implements ClientModInitializer {
 	public static boolean isPeeking = false;
 	public static boolean isBlurring = false;
 
+	// Panic flash state — non-zero while overlay should show
+	public static int panicFlashTicks = 0;
+	private static final int PANIC_FLASH_DURATION = 8; // ticks (~0.4s)
+
 	@Override
 	public void onInitializeClient() {
-		KeyBinding.Category ghostCategory = new KeyBinding.Category(net.minecraft.util.Identifier.of("ghostmode", "keycategory"));
 		GhostModeConfig.load();
 		ChatSentinel.register();
 		WatermarkHud.register();
 		BlurHud.register();
+		StreamHud.register();
 		SessionManager.register();
+
+		KeyBinding.Category ghostCategory = new KeyBinding.Category(net.minecraft.util.Identifier.of("ghostmode", "keys"));
 
 		openConfigKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.ghostmode.open_config",
@@ -75,31 +82,41 @@ public class GhostModeClient implements ClientModInitializer {
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 
-			// ── Config key ────────────────────────────────────────────────
+			// ── Config key ─────────────────────────────────────────────────
 			while (openConfigKey.wasPressed()) {
 				if (client.currentScreen == null) {
 					client.setScreen(GhostModeConfigScreen.create(null));
 				}
 			}
 
-			// ── Panic key ─────────────────────────────────────────────────
+			// ── Panic key — toggles stream mode on/off, flashes overlay ───
 			while (panicKey.wasPressed()) {
 				GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
-				p.streamModeEnabled = true;
-				p.sentinelEnabled = true;
-				p.sentinelChat = true;
-				p.sentinelTabList = true;
-				p.sentinelNametags = true;
-				p.sentinelScoreboard = true;
-				p.sentinelF3 = true;
-				p.maskOwnTabEntry = true;
-				p.hideServerIp = true;
-				p.hideF3Ip = true;
-				p.useAlias = true;
+				if (p.streamModeEnabled) {
+					// K pressed while stream mode is ON → turn it off
+					p.streamModeEnabled = false;
+				} else {
+					// K pressed while stream mode is OFF → panic-enable everything
+					p.streamModeEnabled = true;
+					p.sentinelEnabled = true;
+					p.sentinelChat = true;
+					p.sentinelTabList = true;
+					p.sentinelNametags = true;
+					p.sentinelScoreboard = true;
+					p.sentinelF3 = true;
+					p.maskOwnTabEntry = true;
+					p.hideServerIp = true;
+					p.hideF3Ip = true;
+					p.useAlias = true;
+				}
 				GhostModeConfig.get().save();
+				panicFlashTicks = PANIC_FLASH_DURATION;
 			}
 
-			// ── Peek mode — held key temporarily disables all hiding ──────
+			// Tick down panic flash
+			if (panicFlashTicks > 0) panicFlashTicks--;
+
+			// ── Peek mode — held key temporarily disables all hiding ───────
 			GhostModeConfig.Profile p = GhostModeConfig.get().getActiveProfile();
 			if (p.peekMode && p.streamModeEnabled) {
 				boolean held = InputUtil.isKeyPressed(
@@ -111,7 +128,7 @@ public class GhostModeClient implements ClientModInitializer {
 				isPeeking = false;
 			}
 
-			// ── Manual blur — held key throws black overlay over screen ───
+			// ── Manual blur — held key throws overlay over screen ──────────
 			if (p.manualBlurEnabled) {
 				isBlurring = InputUtil.isKeyPressed(
 						client.getWindow(),
@@ -121,7 +138,7 @@ public class GhostModeClient implements ClientModInitializer {
 				isBlurring = false;
 			}
 
-			// ── Profile cycle key ─────────────────────────────────────────
+			// ── Profile cycle key ──────────────────────────────────────────
 			while (profileCycleKey.wasPressed()) {
 				GhostModeConfig cfg = GhostModeConfig.get();
 				if (cfg.profiles.size() <= 1) return;

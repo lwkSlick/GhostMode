@@ -1,5 +1,5 @@
 {
-  "key.category.ghostmode.keycategory": "GhostMode",
+  "key.category.ghostmode.keys": "GhostMode",
   "key.ghostmode.open_config": "Open Config",
   "key.ghostmode.panic": "Panic (Enable All Protection)",
   "key.ghostmode.peek": "Peek (Hold to Reveal)",

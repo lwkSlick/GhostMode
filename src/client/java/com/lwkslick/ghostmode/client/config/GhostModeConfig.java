@@ -148,6 +148,7 @@ public class GhostModeConfig {
         // ── Stream Mode ───────────────────────────────────────────────────
         public boolean streamModeEnabled   = false;
         public boolean autoEnablePublic    = false;
+        public boolean showStreamDot       = true;
 
         // ── Hotkeys ───────────────────────────────────────────────────────
         public boolean peekMode            = true;
