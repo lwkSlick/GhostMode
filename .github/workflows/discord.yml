@@ -8,16 +8,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: version
+        run: echo "version=$(grep '^mod_version' gradle.properties | cut -d'=' -f2 | tr -d ' ')" >> $GITHUB_OUTPUT
+
       - name: Send Discord message
         run: |
           COMMITS=$(jq -r '.commits[] | "- " + .message' "$GITHUB_EVENT_PATH")
 
           curl -H "Content-Type: application/json" \
           -d "$(jq -n \
-            --arg repo "${{ github.repository }}" \
+            --arg repo "lwkSlick\\GhostMode" \
+            --arg version "${{ steps.version.outputs.version }}" \
             --arg branch "${{ github.ref_name }}" \
             --arg commits "$COMMITS" \
             '{
-              content: ("📦 **" + $repo + "**\n🌿 Branch: `" + $branch + "`\n\n" + $commits)
+              content: ("📦 **" + $repo + " (" + $version + ")**\n🌿 Branch: `" + $branch + "`\n\n" + $commits)
             }')" \
           "${{ secrets.DISCORD_WEBHOOK }}"

@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraft.client.MinecraftClient;
 
 @Mixin(AddServerScreen.class)
 public abstract class AddServerScreenMixin extends Screen {
@@ -54,6 +55,7 @@ public abstract class AddServerScreenMixin extends Screen {
     @Inject(method = "render", at = @At("HEAD"))
     private void beforeRender(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (!GhostModeConfig.get().enabled || !GhostModeConfig.get().hideServerIp) return;
+        if (!(MinecraftClient.getInstance().currentScreen instanceof AddServerScreen)) return;
         if (ghostmode$revealed || addressField == null) return;
 
         String real = addressField.getText();

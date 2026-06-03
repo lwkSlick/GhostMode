@@ -16,11 +16,17 @@ public class GhostModeConfig {
     private static final Path CONFIG_PATH =
             FabricLoader.getInstance().getConfigDir().resolve("ghostmode.json");
 
-    public boolean enabled            = true;
-    public boolean hideServerIp       = true;
-    public boolean hideDirectConnect  = true;
-    public boolean hideUsername       = true;
+    public boolean enabled            = false;
+    public boolean hideServerIp       = false;
+    public boolean hideDirectConnect  = false;
+    public boolean hideUsername       = false;
     public String  usernameAlias      = "Streamer";
+    public boolean hideF3             = false;
+    public boolean hideF3Location     = false;
+    public boolean hideF3Biome        = false;
+    public boolean hideF3LookingAt    = false;
+    public boolean hideF3Memory       = false;
+    public boolean hideF3SystemSpecs  = false;
 
     public static void load() {
         if (Files.exists(CONFIG_PATH)) {
