@@ -17,7 +17,7 @@ jobs:
 
       - name: Send Discord message
         run: |
-          COMMITS=$(jq -r '.commits[] | "- " + .message' "$GITHUB_EVENT_PATH")
+          COMMITS=$(jq -r '.commits[] | "- " + (.message | gsub("\n\n+"; "\n"))' "$GITHUB_EVENT_PATH")
 
           curl -H "Content-Type: application/json" \
           -d "$(jq -n \
