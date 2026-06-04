@@ -1,5 +1,6 @@
 package com.lwkslick.ghostmode.client.mixin;
 
+import com.lwkslick.ghostmode.client.UsernameAliasHelper;
 import com.lwkslick.ghostmode.client.config.GhostModeConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
@@ -19,9 +20,9 @@ public class ChatHudMixin {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.player == null) return message;
         String name = mc.player.getName().getString();
-        String raw = message.getString();
-        if (!raw.contains(name)) return message;
         String alias = (cfg.usernameAlias == null || cfg.usernameAlias.isBlank()) ? "Streamer" : cfg.usernameAlias;
-        return Text.literal(raw.replace(name, alias));
+        String raw = message.getString();
+        String replaced = UsernameAliasHelper.replace(raw, name, alias, cfg.fuzzyHideUsername);
+        return replaced.equals(raw) ? message : Text.literal(replaced);
     }
 }

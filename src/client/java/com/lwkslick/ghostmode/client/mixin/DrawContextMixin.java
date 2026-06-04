@@ -1,8 +1,8 @@
 package com.lwkslick.ghostmode.client.mixin;
 
+import com.lwkslick.ghostmode.client.UsernameAliasHelper;
 import com.lwkslick.ghostmode.client.config.GhostModeConfig;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
@@ -13,14 +13,15 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(DrawContext.class)
 public class DrawContextMixin {
 
-    private String ghostmode$alias(String real) {
+    private String ghostmode$alias(String raw) {
         GhostModeConfig cfg = GhostModeConfig.get();
         if (cfg == null || !cfg.enabled || !cfg.hideUsername) return null;
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.player == null) return null;
         String name = mc.player.getName().getString();
-        return real.contains(name) ? real.replace(name,
-                (cfg.usernameAlias == null || cfg.usernameAlias.isBlank()) ? "Streamer" : cfg.usernameAlias) : null;
+        String alias = (cfg.usernameAlias == null || cfg.usernameAlias.isBlank()) ? "Streamer" : cfg.usernameAlias;
+        String result = UsernameAliasHelper.replace(raw, name, alias, cfg.fuzzyHideUsername);
+        return result.equals(raw) ? null : result;
     }
 
     @ModifyVariable(method = "drawText(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;IIIZ)V", at = @At("HEAD"), argsOnly = true, index = 2)
@@ -43,16 +44,10 @@ public class DrawContextMixin {
         if (mc.player == null) return t;
         String name = mc.player.getName().getString();
         String alias = (cfg.usernameAlias == null || cfg.usernameAlias.isBlank()) ? "Streamer" : cfg.usernameAlias;
-        // Collect the full string including styled segments
         StringBuilder sb = new StringBuilder();
-        t.accept((index, style, codePoint) -> {
-            sb.appendCodePoint(codePoint);
-            return true;
-        });
+        t.accept((index, style, codePoint) -> { sb.appendCodePoint(codePoint); return true; });
         String raw = sb.toString();
-        net.minecraft.client.MinecraftClient.getInstance().player.sendMessage(net.minecraft.text.Text.literal("[DEBUG] " + raw), true);
-        // Rebuild preserving style per character, swapping name chars with alias
-        String replaced = raw.replace(name, alias);
-        return net.minecraft.text.Text.literal(replaced).asOrderedText();
+        String replaced = UsernameAliasHelper.replace(raw, name, alias, cfg.fuzzyHideUsername);
+        return replaced.equals(raw) ? t : Text.literal(replaced).asOrderedText();
     }
 }
