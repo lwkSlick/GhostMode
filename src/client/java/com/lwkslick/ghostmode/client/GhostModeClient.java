@@ -59,6 +59,7 @@ public class GhostModeClient implements ClientModInitializer {
 
         GhostModeHud.register();
 
+        UpdateChecker.checkAsync();
         LOGGER.info("GhostMode client initialized.");
     }
 }
