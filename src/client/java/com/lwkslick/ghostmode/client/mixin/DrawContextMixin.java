@@ -1,6 +1,5 @@
 package com.lwkslick.ghostmode.client.mixin;
 
-import com.lwkslick.ghostmode.client.UsernameAliasHelper;
 import com.lwkslick.ghostmode.client.config.GhostModeConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -20,7 +19,7 @@ public class DrawContextMixin {
         if (mc.player == null) return null;
         String name = mc.player.getName().getString();
         String alias = (cfg.usernameAlias == null || cfg.usernameAlias.isBlank()) ? "Streamer" : cfg.usernameAlias;
-        String result = UsernameAliasHelper.replace(raw, name, alias, cfg.fuzzyHideUsername);
+        String result = raw.replace(name, alias);
         return result.equals(raw) ? null : result;
     }
 
@@ -47,7 +46,7 @@ public class DrawContextMixin {
         StringBuilder sb = new StringBuilder();
         t.accept((index, style, codePoint) -> { sb.appendCodePoint(codePoint); return true; });
         String raw = sb.toString();
-        String replaced = UsernameAliasHelper.replace(raw, name, alias, cfg.fuzzyHideUsername);
+        String replaced = raw.replace(name, alias);
         return replaced.equals(raw) ? t : Text.literal(replaced).asOrderedText();
     }
 }

@@ -20,7 +20,6 @@ public class GhostModeConfig {
     public boolean hideServerIp       = false;
     public boolean hideDirectConnect  = false;
     public boolean hideUsername       = false;
-    public boolean fuzzyHideUsername  = false;
     public String  usernameAlias      = "Streamer";
     public boolean hideF3             = false;
     public boolean hideF3Location     = false;
