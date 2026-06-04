@@ -57,7 +57,7 @@ public class GhostModeHud {
 
             // Build color with opacity
             int opacity = Math.max(0, Math.min(255, cfg.watermarkOpacity));
-            int color = (opacity << 24) | (cfg.watermarkColor & 0xFFFFFF);
+            int color = (opacity << 24) | (cfg.watermarkColor.getRGB() & 0xFFFFFF);
 
             int x, y;
             String pos = cfg.watermarkPosition == null ? "ACTION_BAR" : cfg.watermarkPosition;
