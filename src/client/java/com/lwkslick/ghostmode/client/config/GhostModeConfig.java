@@ -27,6 +27,13 @@ public class GhostModeConfig {
     public boolean hideF3LookingAt    = false;
     public boolean hideF3Memory       = false;
     public boolean hideF3SystemSpecs  = false;
+    public boolean watermarkEnabled   = false;
+    public String  watermarkText      = "YourChannel";
+    public int     watermarkColor     = 0xFFFFFF;
+    public int     watermarkOpacity   = 255;
+    public String  watermarkPosition  = "ACTION_BAR";
+    public boolean fakeCoords         = false;
+    public int     fakeCoordsInterval = 1;
 
     public static void load() {
         if (Files.exists(CONFIG_PATH)) {

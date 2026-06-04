@@ -37,6 +37,7 @@ public class GhostModeClient implements ClientModInitializer {
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            GhostModeHud.tickFakeCoords();
             while (openConfigKey.wasPressed()) {
                 if (client.currentScreen == null) {
                     client.setScreen(GhostModeConfigScreen.create(null));
@@ -55,6 +56,8 @@ public class GhostModeClient implements ClientModInitializer {
             if (!raw.contains(name)) return message;
             return Text.literal(raw.replace(name, alias));
         });
+
+        GhostModeHud.register();
 
         LOGGER.info("GhostMode client initialized.");
     }

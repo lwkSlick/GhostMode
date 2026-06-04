@@ -8,7 +8,8 @@
 		"DirectConnectScreenMixin",
 		"DrawContextMixin",
 		"ChatHudMixin",
-		"DebugHudMixin"
+		"DebugHudMixin",
+		"FakeCoordsDebugMixin"
 	],
 	"injectors": { "defaultRequire": 1 }
 }
