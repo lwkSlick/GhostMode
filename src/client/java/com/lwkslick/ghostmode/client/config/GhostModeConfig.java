@@ -34,6 +34,9 @@ public class GhostModeConfig {
     public String  watermarkPosition  = "ACTION_BAR";
     public boolean fakeCoords         = false;
     public int     fakeCoordsInterval = 1;
+    public boolean hideTabList        = false;
+    public boolean tabCountOnly       = false;
+    public int     fakePing           = -1;
 
     public static void load() {
         if (Files.exists(CONFIG_PATH)) {

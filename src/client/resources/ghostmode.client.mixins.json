@@ -9,7 +9,8 @@
 		"DrawContextMixin",
 		"ChatHudMixin",
 		"DebugHudMixin",
-		"FakeCoordsDebugMixin"
+		"FakeCoordsDebugMixin",
+		"PlayerListHudMixin"
 	],
 	"injectors": { "defaultRequire": 1 }
 }
