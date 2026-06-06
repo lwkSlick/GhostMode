@@ -27,11 +27,6 @@ public class GhostModeConfig {
     public boolean hideF3LookingAt    = false;
     public boolean hideF3Memory       = false;
     public boolean hideF3SystemSpecs  = false;
-    public boolean watermarkEnabled   = false;
-    public String  watermarkText      = "YourChannel";
-    public java.awt.Color watermarkColor = new java.awt.Color(255, 255, 255, 255);
-    public int     watermarkOpacity   = 255;
-    public String  watermarkPosition  = "ACTION_BAR";
     public boolean fakeCoords         = false;
     public int     fakeCoordsInterval = 1;
     public boolean hideTabList        = false;
@@ -43,10 +38,6 @@ public class GhostModeConfig {
             try (Reader r = Files.newBufferedReader(CONFIG_PATH)) {
                 INSTANCE = GSON.fromJson(r, GhostModeConfig.class);
                 if (INSTANCE == null) INSTANCE = new GhostModeConfig();
-                if (INSTANCE.watermarkPosition == null) INSTANCE.watermarkPosition = "ACTION_BAR";
-                if (INSTANCE.usernameAlias == null) INSTANCE.usernameAlias = "Streamer";
-                if (INSTANCE.watermarkText == null) INSTANCE.watermarkText = "YourChannel";
-                if (INSTANCE.watermarkColor == null) INSTANCE.watermarkColor = new java.awt.Color(255, 255, 255);
             } catch (Exception e) {
                 INSTANCE = new GhostModeConfig();
             }
