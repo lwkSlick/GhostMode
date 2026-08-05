@@ -6,9 +6,9 @@ import net.minecraft.text.Text;
 
 public class UpdateChecker {
 
-    private static final String MOD_ID = "ghostmode";
+    private static final String MOD_ID = "ghost-mode";
     private static final String API_URL =
-            "https://api.modrinth.com/v2/project/ghost-mode/version";
+            "https://api.modrinth.com/v2/project/" + MOD_ID + "/version";
 
     public static void checkAsync() {
         Thread thread = new Thread(() -> {

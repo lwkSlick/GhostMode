@@ -27,6 +27,11 @@ public class GhostModeConfig {
     public boolean hideF3LookingAt    = false;
     public boolean hideF3Memory       = false;
     public boolean hideF3SystemSpecs  = false;
+    public boolean watermarkEnabled   = false;
+    public String  watermarkText      = "YourChannel";
+    public java.awt.Color watermarkColor = new java.awt.Color(255, 255, 255);
+    public int     watermarkOpacity   = 255;
+    public String  watermarkPosition  = "ACTION_BAR";
     public boolean fakeCoords         = false;
     public int     fakeCoordsInterval = 1;
     public boolean hideTabList        = false;
