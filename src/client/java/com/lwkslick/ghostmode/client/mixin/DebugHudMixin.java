@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin({
         PlayerPositionDebugHudEntry.class,
         PlayerSectionPositionDebugHudEntry.class,
+        ChunkRenderStatsDebugHudEntry.class,
         BiomeDebugHudEntry.class,
         LookingAtBlockDebugHudEntry.class,
         LookingAtEntityDebugHudEntry.class,
@@ -30,7 +31,8 @@ public abstract class DebugHudMixin {
 
         if (cfg.hideF3Location && (
                 self instanceof PlayerPositionDebugHudEntry ||
-                        self instanceof PlayerSectionPositionDebugHudEntry)) {
+                        self instanceof PlayerSectionPositionDebugHudEntry ||
+                        self instanceof ChunkRenderStatsDebugHudEntry)) {
             ci.cancel(); return;
         }
         if (cfg.hideF3Biome && self instanceof BiomeDebugHudEntry) {
